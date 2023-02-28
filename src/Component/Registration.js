@@ -1,7 +1,8 @@
 import signupImg from './../images/signup_bg.jpg'
 import { Link } from "react-router-dom";
-import React, { useEffect, useState } from 'react';
 import { signUp } from '../services/user-services';
+import { useFormik } from 'formik';
+import { signUpSchemas } from '../schemas';
 
 const initialValues = {
     firstName: "",
@@ -10,26 +11,16 @@ const initialValues = {
     phone: "",
     password: ""
 };
+
 function Registration() {
-
-    const [values, setValues] = useState(initialValues);
-    const handleInputeChange = (event) => {
-        const { name, value } = event.target;
-        setValues({
-            ...values,
-            [name]: value
-        });
-    }
-
-    const handleSubmit = (event) => {
-        event.preventDefault()
-        console.log(values)
-        signUp(values).then((resp) => {
-            alert("Registerd successsully");
-        }).catch((error) => {
-            alert("user registration failed")
-        })
-    }
+    const {values,handleSubmit,errors,handleChange,handleBlur} = useFormik({
+        initialValues: initialValues,
+        validationSchema: signUpSchemas,
+        onSubmit: (values) =>{
+            console.log("registration values:", values)
+        }
+    });
+    console.log(errors);
 
     return (
         <div >
@@ -50,7 +41,7 @@ function Registration() {
                                                 <div className="d-flex flex-row align-items-center mb-4">
                                                     <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                                                     <div className="form-outline flex-fill mb-0">
-                                                        <input type="text" id="fname" value={values.firstName} name="firstName" onChange={handleInputeChange}
+                                                        <input type="text" id="fname" value={values.firstName} name="firstName" onChange={handleChange}
                                                             className="form-control" style={{ border: "3px solid #ccc" }} />
                                                         <label className="form-label" htmlFor="fnameFor">First Name</label>
                                                     </div>
@@ -59,7 +50,7 @@ function Registration() {
                                                 <div className="d-flex flex-row align-items-center mb-4">
                                                     <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                                                     <div className="form-outline flex-fill mb-0">
-                                                        <input type="text" id="lname" value={values.lastName} name="lastName" onChange={handleInputeChange}
+                                                        <input type="text" id="lname" value={values.lastName} name="lastName" onChange={handleChange}
                                                             className="form-control" style={{ border: "3px solid #ccc" }} />
                                                         <label className="form-label" htmlFor="lnameFor">Last Name</label>
                                                     </div>
@@ -68,8 +59,8 @@ function Registration() {
                                                 <div className="d-flex flex-row align-items-center mb-4">
                                                     <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
                                                     <div className="form-outline flex-fill mb-0">
-                                                        <input type="email" id="email" value={values.email} name="email" onChange={handleInputeChange}
-                                                            className="form-control" style={{ border: "3px solid #ccc" }} />
+                                                        <input type="email" id="email" value={values.email} name="email" onChange={handleChange}
+                                                            className={`form-control` + (errors.email ? "input-error" :"")} style={{ border: "3px solid #ccc" }} />
                                                         <label className="form-label" htmlFor="emailFor">Your Email</label>
                                                     </div>
                                                 </div>
@@ -77,7 +68,7 @@ function Registration() {
                                                 <div className="d-flex flex-row align-items-center mb-4">
                                                     <i className="fas fa-key fa-lg me-3 fa-fw"></i>
                                                     <div className="form-outline flex-fill mb-0">
-                                                        <input type="text" id="phone" value={values.phone} name="phone" onChange={handleInputeChange}
+                                                        <input type="text" id="phone" value={values.phone} name="phone" onChange={handleChange}
                                                             className="form-control" style={{ border: "3px solid #ccc" }} />
                                                         <label className="form-label" htmlFor="phoneFor">Phone Number</label>
                                                     </div>
@@ -87,14 +78,15 @@ function Registration() {
                                                     <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
                                                     <div className="form-outline flex-fill mb-0">
                                                         <input type="password" id="password" value={values.password} name="password"
-                                                            onChange={handleInputeChange} className="form-control" style={{ border: "3px solid #ccc" }} />
+                                                            onChange={handleChange} className="form-control" style={{ border: "3px solid #ccc" }} />
                                                         <label className="form-label" htmlFor="passwordFor">Password</label>
                                                     </div>
                                                 </div>
 
                                                 <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                                    <button className="btn btn-primary btn-lg">Register</button>
+                                                    <button type ="submit" className="btn btn-primary btn-lg">Register</button>
                                                 </div>
+
 
                                             </form>
                                         </div>
