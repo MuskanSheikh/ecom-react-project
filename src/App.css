@@ -39,5 +39,11 @@
 
 input.input-error,
 select.input-error{
-  border-color: #8f0505;
+  border-color: #ff0000 !important;
 }
+
+.error{
+  color: #ff0000;
+}
+
+

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { signUp } from '../services/user-services';
 import { useFormik } from 'formik';
 import { signUpSchemas } from '../schemas';
+import { act } from 'react-dom/test-utils';
 
 const initialValues = {
     firstName: "",
@@ -13,11 +14,19 @@ const initialValues = {
 };
 
 function Registration() {
-    const {values,handleSubmit,errors,handleChange,handleBlur} = useFormik({
+    const {values,handleSubmit,errors,touched,handleChange,handleBlur,isSubmitting} = useFormik({
         initialValues: initialValues,
         validationSchema: signUpSchemas,
-        onSubmit: (values) =>{
+        onSubmit: (values,actions) =>{
             console.log("registration values:", values)
+            console.log(actions);
+
+            signUp(values).then((resp) => {
+                alert("Registerd successsully");
+            }).catch((error) => {
+                alert("user registration failed")
+            })
+            actions.resetForm();
         }
     });
     console.log(errors);
@@ -36,14 +45,15 @@ function Registration() {
                                             <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
 
                                             <form className="mx-1 mx-md-4" onSubmit={handleSubmit}>
-                                                <p className="text-muted" style={{ paddingLeft: "40px" }}> Already have an account..?<Link to="/login-page"> Login </Link> here.</p>
+                                                <p className="text-muted" style={{ paddingLeft: "40px" }}> Already have an account?<Link to="/login-page"> Login </Link> here.</p>
 
-                                                <div className="d-flex flex-row align-items-center mb-4">
+                                                <div className="d-flex flex-row align-items-center mb-4 ">
                                                     <i className="fas fa-user fa-lg me-3 fa-fw"></i>
-                                                    <div className="form-outline flex-fill mb-0">
+                                                    <div className="form-outline flex-fill mb-0 ">
                                                         <input type="text" id="fname" value={values.firstName} name="firstName" onChange={handleChange}
-                                                            className="form-control" style={{ border: "3px solid #ccc" }} />
-                                                        <label className="form-label" htmlFor="fnameFor">First Name</label>
+                                                            className={(errors.firstName && touched.firstName ? "input-error" :"")} style={{ border: "3px solid #ccc" }} 
+                                                            placeholder="First Name" size="25" onBlur={handleBlur}/>
+                                                            {errors.firstName && touched.firstName && <p className='error'>{errors.firstName}</p>}
                                                     </div>
                                                 </div>
 
@@ -51,8 +61,9 @@ function Registration() {
                                                     <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                                                     <div className="form-outline flex-fill mb-0">
                                                         <input type="text" id="lname" value={values.lastName} name="lastName" onChange={handleChange}
-                                                            className="form-control" style={{ border: "3px solid #ccc" }} />
-                                                        <label className="form-label" htmlFor="lnameFor">Last Name</label>
+                                                            className={(errors.lastName && touched.lastName  ? "input-error" :"")} style={{ border: "3px solid #ccc" }} 
+                                                            placeholder="Last Name"  size="25" onBlur={handleBlur}/>
+                                                            {errors.lastName && touched.lastName && <p className='error'>{errors.lastName}</p>}
                                                     </div>
                                                 </div>
 
@@ -60,8 +71,9 @@ function Registration() {
                                                     <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
                                                     <div className="form-outline flex-fill mb-0">
                                                         <input type="email" id="email" value={values.email} name="email" onChange={handleChange}
-                                                            className={`form-control` + (errors.email ? "input-error" :"")} style={{ border: "3px solid #ccc" }} />
-                                                        <label className="form-label" htmlFor="emailFor">Your Email</label>
+                                                            className={(errors.email && touched.email  ? "input-error" :"")} style={{ border: "3px solid #ccc" }} 
+                                                            placeholder="E-mail"  size="25" onBlur={handleBlur}/>
+                                                            {errors.email && touched.email && <p className='error'>{errors.email}</p>}
                                                     </div>
                                                 </div>
 
@@ -69,8 +81,9 @@ function Registration() {
                                                     <i className="fas fa-key fa-lg me-3 fa-fw"></i>
                                                     <div className="form-outline flex-fill mb-0">
                                                         <input type="text" id="phone" value={values.phone} name="phone" onChange={handleChange}
-                                                            className="form-control" style={{ border: "3px solid #ccc" }} />
-                                                        <label className="form-label" htmlFor="phoneFor">Phone Number</label>
+                                                            className={(errors.phone && touched.phone  ? "input-error" :"")} style={{ border: "3px solid #ccc" }} 
+                                                            placeholder="Phone"  size="25" onBlur={handleBlur}/>
+                                                            {errors.phone && touched.phone && <p className='error'>{errors.phone}</p>}
                                                     </div>
                                                 </div>
 
@@ -78,13 +91,14 @@ function Registration() {
                                                     <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
                                                     <div className="form-outline flex-fill mb-0">
                                                         <input type="password" id="password" value={values.password} name="password"
-                                                            onChange={handleChange} className="form-control" style={{ border: "3px solid #ccc" }} />
-                                                        <label className="form-label" htmlFor="passwordFor">Password</label>
+                                                            onChange={handleChange} className={(errors.password && touched.password  ? "input-error" :"")} 
+                                                            style={{ border: "3px solid #ccc" }} placeholder="Password"  size="25" onBlur={handleBlur}/>
+                                                            {errors.password && touched.password && <p className='error'>{errors.password}</p>}
                                                     </div>
                                                 </div>
 
                                                 <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                                    <button type ="submit" className="btn btn-primary btn-lg">Register</button>
+                                                    <button disabled={isSubmitting} type ="submit" className="btn btn-primary btn-lg">Register</button>
                                                 </div>
 
 
@@ -92,9 +106,7 @@ function Registration() {
                                         </div>
 
                                         <div className="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-
                                             <img src={signupImg} className="img-fluid" alt="Sample image" />
-
                                         </div>
 
                                     </div>
