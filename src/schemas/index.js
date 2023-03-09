@@ -12,3 +12,10 @@ export const signUpSchemas = Yup.object({
     .matches(passRegx, {"message":"min 5 character , 1 uppper case , 1 lower case, 1 number"})
     .required("password number is required"),
 });
+
+export const loginSchemas = Yup.object({
+    email: Yup.string().email("please enter a valid email").required("email is required"),
+    password: Yup.string().min(5).max(16)
+    .matches(passRegx, {"message":"min 5 character , 1 uppper case , 1 lower case, 1 number"})
+    .required("password number is required"),
+})
