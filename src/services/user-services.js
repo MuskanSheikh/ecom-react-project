@@ -5,6 +5,10 @@ export const signUp=async (user) => {
     return response.data;
 }
 export const logIn = async (authResponse) => {
-    const response = await myAxios.post('api/v1/auth/login',authResponse);
-    return response.data;
+    await myAxios.post('api/v1/auth/login',authResponse).then((response) => {
+        if(response.data.accessToken){
+            localStorage.setItem("user",JSON.stringify(response.data))
+        }
+        return response.data;
+    });
 }

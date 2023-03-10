@@ -1,16 +1,17 @@
 import React from 'react';
 import loginbg from './../images/login_bg.jpg'
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 import { loginSchemas } from '../schemas';
 import { logIn } from '../services/user-services';
 import { useFormik } from 'formik';
 
 const initialValues = {
-    email: "",
+    userName: "",
     password: ""
 }
 
 function Login() {
+    const navigate = useNavigate();
 
     const { values, handleSubmit, errors, touched, handleChange, handleBlur, isSubmitting } = useFormik({
         initialValues: initialValues,
@@ -20,6 +21,8 @@ function Login() {
             console.log(actions);
 
             logIn(values).then((resp) => {
+                localStorage.setItem("auctenticated",true)
+                navigate("/");
                 alert("login successsully");
             }).catch((error) => {
                 alert("userName or password is incorrect")
@@ -41,13 +44,13 @@ function Login() {
                                         <div className="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                                             <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Log in</p>
                                             <form onSubmit={handleSubmit}>
-                                                <p className='text-muted'>Don't have an accout.. ?<Link to="/signin-page"> Signin </Link> here. </p>
+                                                <p className='text-muted'>Don't have an accout.. ?<Link to="/register"> Signin </Link> here. </p>
                                                 {/* <!-- Email input --> */}
                                                 <div className="form-outline mb-4">
-                                                    <input type="email" id="form1Example13" className={(errors.email && touched.email ? "input-error" : "")}
-                                                        style={{ border: "3px solid #ccc" }} value={values.email} name="email" onChange={handleChange} onBlur={handleBlur}
+                                                    <input type="email" id="form1Example13" className={(errors.userName && touched.userName ? "input-error" : "")}
+                                                        style={{ border: "3px solid #ccc" }} value={values.userName} name="userName" onChange={handleChange} onBlur={handleBlur}
                                                         placeholder="email"  size="25"/>
-                                                    {errors.email && touched.email && <p className='error'>{errors.email}</p>}
+                                                    {errors.userName && touched.userName && <p className='error'>{errors.userName}</p>}
                                                 </div>
 
                                                 {/* <!-- Password input --> */}
@@ -62,27 +65,6 @@ function Login() {
                                                 </div>
 
                                                 <button disabled={isSubmitting} type="submit" className="btn btn-primary btn-lg btn-block">Sign in</button>
-
-                                                {/* <div className="divider d-flex align-items-center my-4">
-                                                    <p className="text-center fw-bold mx-3 mb-0 text-muted" >OR</p>
-                                                </div>
-
-                                                <a className="btn btn-primary btn-lg btn-block" style={{ backgroundColor: "#3b5998" }} href="#!"
-                                                    role="button">
-                                                    <i className="fab fa-facebook-f me-2"></i>Continue with Facebook
-                                                </a>
-                                                <a className="btn btn-primary btn-lg btn-block" style={{ backgroundColor: "#55acee" }} href="#!"
-                                                    role="button">
-                                                    <i className="fab fa-twitter me-2"></i>Continue with Twitter</a> */}
-
-                                                {/* <div className="d-flex justify-content-around align-items-center mb-4">
-                                                    <div className="form-check">
-                                                        <input className="form-check-input" type="checkbox" value="" id="form1Example3" checked />
-                                                        <label className="form-check-label" htmlFor="form1Example3"> Remember me </label>
-                                                    </div>
-                                                    <Link to="/forgot-password-page">Forgot password?</Link>
-                                                </div>  */}
-
                                             </form>
                                         </div>
                                         <div className="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">

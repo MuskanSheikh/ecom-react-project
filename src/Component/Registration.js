@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { signUp } from '../services/user-services';
 import { useFormik } from 'formik';
 import { signUpSchemas } from '../schemas';
-import { act } from 'react-dom/test-utils';
 
 const initialValues = {
     firstName: "",
