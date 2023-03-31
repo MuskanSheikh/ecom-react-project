@@ -12,3 +12,8 @@ export const logIn = async (authResponse) => {
         return response.data;
     });
 }
+
+export const profile = async (id) =>{
+    const response = await myAxios.get(`user-api/get/${id}`);
+    return response.data;
+}

@@ -21,9 +21,7 @@ function Login() {
             console.log(actions);
 
             logIn(values).then((resp) => {
-                localStorage.setItem("auctenticated",true)
-                navigate("/");
-                alert("login successsully");
+                navigate("/profile");
             }).catch((error) => {
                 alert("userName or password is incorrect")
             })
