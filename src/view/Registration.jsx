@@ -1,27 +1,44 @@
 import signupImg from './../images/signup_bg.jpg'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signUp } from '../services/user-services';
 import { useFormik } from 'formik';
 import { signUpSchemas } from '../schemas';
+import { ROLE } from '../common/RoleContant';
+import TextInput from '../Component/Input/TextInput';
+import InputRadio from '../Component/Input/InputRadio';
+import '../css/Background.css';
 
 const initialValues = {
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
-    password: ""
+    password: "",
+    role: ""
 };
 
+const roleOptions = [
+    { label: 'User', value: ROLE.USER },
+    { label: 'Admin', value: ROLE.ADMIN_USER }
+];
+
 function Registration() {
-    const {values,handleSubmit,errors,touched,handleChange,handleBlur,isSubmitting} = useFormik({
+    const navigate = useNavigate();
+
+    const { values, handleSubmit, errors, touched, handleChange, handleBlur, isSubmitting } = useFormik({
         initialValues: initialValues,
         validationSchema: signUpSchemas,
-        onSubmit: (values,actions) =>{
+        onSubmit: (values, actions) => {
             console.log("registration values:", values)
             console.log(actions);
 
             signUp(values).then((resp) => {
-                alert("Registerd successsully");
+                console.log("value->", resp.status)
+                if (resp.status) {
+                    navigate("/login-page")
+                } else {
+                    alert("user already exist");
+                }
             }).catch((error) => {
                 alert("user registration failed")
             })
@@ -32,7 +49,7 @@ function Registration() {
 
     return (
         <div >
-            <section className="vh-100" style={{ backgroundColor: " #b3f0ff" }}>
+            <section className="vh-100 background" >
                 <div className="container h-100" >
                     <div className="row d-flex justify-content-center align-items-center h-100">
                         <div className="col-lg-12 col-xl-11">
@@ -48,56 +65,57 @@ function Registration() {
 
                                                 <div className="d-flex flex-row align-items-center mb-4 ">
                                                     <i className="fas fa-user fa-lg me-3 fa-fw"></i>
-                                                    <div className="form-outline flex-fill mb-0 ">
-                                                        <input type="text" id="fname" value={values.firstName} name="firstName" onChange={handleChange}
-                                                            className={(errors.firstName && touched.firstName ? "input-error" :"")} style={{ border: "3px solid #ccc" }} 
-                                                            placeholder="First Name" size="25" onBlur={handleBlur}/>
-                                                            {errors.firstName && touched.firstName && <p className='error'>{errors.firstName}</p>}
+                                                    <div className=" flex-fill mb-0 ">
+                                                        <TextInput className="form-control" type="text" name="firstName" label="First Name" placeholder="First Name" value={values.firstName} onChange={handleChange}
+                                                            onBlur={handleBlur} error={errors.firstName} touched={touched.firstName} />
                                                     </div>
                                                 </div>
 
                                                 <div className="d-flex flex-row align-items-center mb-4">
                                                     <i className="fas fa-user fa-lg me-3 fa-fw"></i>
-                                                    <div className="form-outline flex-fill mb-0">
-                                                        <input type="text" id="lname" value={values.lastName} name="lastName" onChange={handleChange}
-                                                            className={(errors.lastName && touched.lastName  ? "input-error" :"")} style={{ border: "3px solid #ccc" }} 
-                                                            placeholder="Last Name"  size="25" onBlur={handleBlur}/>
-                                                            {errors.lastName && touched.lastName && <p className='error'>{errors.lastName}</p>}
+                                                    <div className=" flex-fill mb-0">
+                                                        <TextInput className="form-control" type="text" name="lastName" label="Last Name" placeholder="Last Name" value={values.lastName} onChange={handleChange}
+                                                            onBlur={handleBlur} error={errors.lastName} touched={touched.lastName} />
                                                     </div>
                                                 </div>
 
                                                 <div className="d-flex flex-row align-items-center mb-4">
                                                     <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                                                    <div className="form-outline flex-fill mb-0">
-                                                        <input type="email" id="email" value={values.email} name="email" onChange={handleChange}
-                                                            className={(errors.email && touched.email  ? "input-error" :"")} style={{ border: "3px solid #ccc" }} 
-                                                            placeholder="E-mail"  size="25" onBlur={handleBlur}/>
-                                                            {errors.email && touched.email && <p className='error'>{errors.email}</p>}
+                                                    <div className=" flex-fill mb-0">
+                                                        <TextInput className="form-control" type="text" name="email" label="Email" placeholder="Email" value={values.email} onChange={handleChange}
+                                                            onBlur={handleBlur} error={errors.email} touched={touched.email} />
                                                     </div>
                                                 </div>
 
                                                 <div className="d-flex flex-row align-items-center mb-4">
                                                     <i className="fas fa-key fa-lg me-3 fa-fw"></i>
-                                                    <div className="form-outline flex-fill mb-0">
-                                                        <input type="text" id="phone" value={values.phone} name="phone" onChange={handleChange}
-                                                            className={(errors.phone && touched.phone  ? "input-error" :"")} style={{ border: "3px solid #ccc" }} 
-                                                            placeholder="Phone"  size="25" onBlur={handleBlur}/>
-                                                            {errors.phone && touched.phone && <p className='error'>{errors.phone}</p>}
+                                                    <div className=" flex-fill mb-0">
+                                                        <TextInput className="form-control" type="tel" name="phone" label="Phone" placeholder="Phone" value={values.phone} onChange={handleChange}
+                                                            onBlur={handleBlur} error={errors.phone} touched={touched.phone} />
                                                     </div>
                                                 </div>
 
                                                 <div className="d-flex flex-row align-items-center mb-4">
                                                     <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
-                                                    <div className="form-outline flex-fill mb-0">
-                                                        <input type="password" id="password" value={values.password} name="password"
-                                                            onChange={handleChange} className={(errors.password && touched.password  ? "input-error" :"")} 
-                                                            style={{ border: "3px solid #ccc" }} placeholder="Password"  size="25" onBlur={handleBlur}/>
-                                                            {errors.password && touched.password && <p className='error'>{errors.password}</p>}
+                                                    <div className=" flex-fill mb-0">
+                                                        <TextInput className="form-control" type="password" name="password" label="Password" placeholder="Password" value={values.password} onChange={handleChange}
+                                                            onBlur={handleBlur} error={errors.password} touched={touched.password} />
+                                                    </div>
+                                                </div>
+
+                                                <div className="d-flex flex-row align-items-center mb-4">
+                                                    <i className="fas fa-user-tag fa-lg me-3 fa-fw"></i>
+                                                    <div className=" flex-fill mb-0">
+                                                        {roleOptions.map((role)=> (
+                                                            <InputRadio type="radio" name="role" label={role.label} placeholder="role" value={role.value} onChange={handleChange}
+                                                            checked={values.role === role.value}
+                                                            onBlur={handleBlur} error={errors.role} touched={touched.role} />
+                                                        ))}
                                                     </div>
                                                 </div>
 
                                                 <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                                    <button disabled={isSubmitting} type ="submit" className="btn btn-primary btn-lg">Register</button>
+                                                    <button disabled={isSubmitting} type="submit" className="btn btn-primary btn-lg">Register</button>
                                                 </div>
 
 
